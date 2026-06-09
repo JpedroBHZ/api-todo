@@ -1,22 +1,36 @@
 package com.JpedroBHZ.todo.service;
 
+import com.JpedroBHZ.todo.dto.TaskRequestDTO;
+import com.JpedroBHZ.todo.dto.TaskResponseDTO;
 import com.JpedroBHZ.todo.model.Task;
 import com.JpedroBHZ.todo.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor // Cria o construtor para o 'repository' por debaixo dos panos
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository repository;
 
-    public List<Task> listAll() {
-        return repository.findAll();
+    public List<TaskResponseDTO> listAll() {
+        return repository.findAll()
+                .stream()
+                .map(task -> new TaskResponseDTO(task.getId(), task.getDescription(), task.isCompleted()))
+                .collect(Collectors.toList());
     }
 
-    public Task save(Task task) {
-        return repository.save(task);
+    public TaskResponseDTO save(TaskRequestDTO request) {
+        // Converte o DTO de entrada para a Entidade que o banco entende
+        Task task = new Task();
+        task.setDescription(request.description());
+        task.setCompleted(false); // Toda tarefa nova nasce sem estar concluída
+
+        Task savedTask = repository.save(task);
+
+        // Retorna o DTO de resposta formatado
+        return new TaskResponseDTO(savedTask.getId(), savedTask.getDescription(), savedTask.isCompleted());
     }
 }
