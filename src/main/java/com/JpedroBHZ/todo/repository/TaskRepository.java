@@ -1,10 +1,18 @@
 package com.JpedroBHZ.todo.repository;
 
 import com.JpedroBHZ.todo.model.Task;
+import com.JpedroBHZ.todo.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository; // ou JpaRepository
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-@Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    // Só de estender o JpaRepository, você já ganha os métodos prontos!
+
+    // Busca as tarefas paginadas filtrando pelo usuário
+    Page<Task> findByUser(User user, Pageable pageable);
+
+    // Garante a busca por ID apenas se pertencer ao usuário correto
+    Optional<Task> findByIdAndUser(Long id, User user);
 }
