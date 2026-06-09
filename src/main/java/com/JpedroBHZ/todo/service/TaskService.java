@@ -2,6 +2,7 @@ package com.JpedroBHZ.todo.service;
 
 import com.JpedroBHZ.todo.dto.TaskRequestDTO;
 import com.JpedroBHZ.todo.dto.TaskResponseDTO;
+import com.JpedroBHZ.todo.infra.exceptions.ResourceNotFoundException;
 import com.JpedroBHZ.todo.model.Task;
 import com.JpedroBHZ.todo.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,12 @@ public class TaskService {
 
         // Retorna o DTO de resposta formatado
         return new TaskResponseDTO(savedTask.getId(), savedTask.getDescription(), savedTask.isCompleted());
+    }
+
+    public TaskResponseDTO findById(Long id) {
+        Task task = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tarefa com o ID " + id + " não foi encontrada."));
+
+        return new TaskResponseDTO(task.getId(), task.getDescription(), task.isCompleted());
     }
 }

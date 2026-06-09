@@ -35,4 +35,20 @@ public class ControllerExceptionHandler {
 
         return ResponseEntity.status(status).body(err);
     }
+
+    // Trata erros de recursos não encontrados (Status 404)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND; // 404
+
+        StandardError err = new StandardError(
+                Instant.now(),
+                status.value(),
+                "Resource Not Found",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(err);
+    }
 }
