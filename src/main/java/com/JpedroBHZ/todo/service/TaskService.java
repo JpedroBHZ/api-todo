@@ -6,6 +6,8 @@ import com.JpedroBHZ.todo.infra.exceptions.ResourceNotFoundException;
 import com.JpedroBHZ.todo.model.Task;
 import com.JpedroBHZ.todo.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,11 +18,9 @@ public class TaskService {
 
     private final TaskRepository repository;
 
-    public List<TaskResponseDTO> listAll() {
-        return repository.findAll()
-                .stream()
-                .map(task -> new TaskResponseDTO(task.getId(), task.getDescription(), task.isCompleted()))
-                .collect(Collectors.toList());
+    public Page<TaskResponseDTO> listAll(Pageable pageable) {
+        return repository.findAll(pageable)
+                .map(task -> new TaskResponseDTO(task.getId(), task.getDescription(), task.isCompleted()));
     }
 
     public TaskResponseDTO save(TaskRequestDTO request) {

@@ -4,6 +4,8 @@ import com.JpedroBHZ.todo.dto.TaskRequestDTO;
 import com.JpedroBHZ.todo.dto.TaskResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import com.JpedroBHZ.todo.service.TaskService;
 import java.util.List;
@@ -17,9 +19,8 @@ public class TaskController {
     private final TaskService service;
 
     @GetMapping
-    public List<TaskResponseDTO> getAll() {
-        return service.listAll();
-    }
+    public Page<TaskResponseDTO> getAll(Pageable pageable) {
+        return service.listAll(pageable);}
 
     @PostMapping
     public TaskResponseDTO create(@Valid @RequestBody TaskRequestDTO request) {
